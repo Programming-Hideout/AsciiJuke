@@ -14,9 +14,9 @@ project "AsciiJuke"
     location "build/project"
     kind "ConsoleApp"
     language "C"
-    targetdir "bin/%{cfg.buildcfg}"
+    targetdir "build/bin/%{cfg.buildcfg}"
 
-    files { "**.h", "**.c" }
+    files { "./src/**.h", "./src/**.c" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }
