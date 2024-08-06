@@ -2,4 +2,4 @@
 
 // Function definitions
 
-bool dir_exists(char *dirpath);
+bool dir_exists(const char *dirpath);
