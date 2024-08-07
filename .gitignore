@@ -1,1 +1,5 @@
 /build
+juke
+/**/*.o
+/**/*.flac
+src/flac/flac.o
