@@ -42,8 +42,7 @@ bool is_valid_wav_file(FILE *in) {
 
 // this loads the whole file into memory,
 // we need a way to divide this into buffers
-void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header,
-                                FILE *in) {
+void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *in) {
 
     assert(in && "The file pointer should be valid");
     assert((sizeof(buffer) >= wav_header.dataSubchunkSize) &&
@@ -66,8 +65,7 @@ void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *in) {
     fread(buffer, wav_header.byteRate, 1, in);
 }
 
-void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header,
-                      uint8_t n_samples, FILE *in) {
+void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *in) {
 
     assert(in && "The file pointer should be valid");
     assert((sizeof(buffer) >= sizeof(wav_header.byteRate * n_samples)) &&
