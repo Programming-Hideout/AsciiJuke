@@ -1,4 +1,5 @@
 #include "flac.h"
+#include "../../utils/endians.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -20,11 +21,6 @@ typedef struct audioFrame {
 
 // LINK:
 // https://stackoverflow.com/questions/2182002/how-to-convert-big-endian-to-little-endian-in-c-without-using-library-functions
-uint16_t swap_uint16(uint16_t val) { return (val << 8) | (val >> 8); }
-uint32_t swap_uint32(uint32_t val) {
-    val = ((val << 8) & 0xFF00FF00) | ((val >> 8) & 0xFF00FF);
-    return (val << 16) | (val >> 16);
-}
 
 void flac_mh_extract(metadataBlockHeader_t *mh, uint32_t data) {
     // The first bit is the isLastBlock
