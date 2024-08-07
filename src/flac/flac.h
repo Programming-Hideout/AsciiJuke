@@ -28,16 +28,16 @@ typedef enum lastBlockFlag {
 } lastBlockFlag_e;
 
 typedef struct metadataBlockHeader {
-    lastBlockFlag_e isLastBlock;  // 1 if it is, 0 if not.  1 Bit
-    blockTypes_e blockType;       // 0 for streamInfo, etc. 7 Bits
-    uint32_t blockSize;           // the size of the metadata block. 24 Bits
+    lastBlockFlag_e isLastBlock; // 1 if it is, 0 if not.  1 Bit
+    blockTypes_e blockType;      // 0 for streamInfo, etc. 7 Bits
+    uint32_t blockSize;          // the size of the metadata block. 24 Bits
 } metadataBlockHeader_t;
 
 // Block size refers to the size of the metaDataBlockData
 typedef struct metadataBlockData {
     // Technically you dont need this / this isnt stored
     // I will still store it to keep track of the block data size
-    uint32_t *size;  // pointer for memory efficiency
+    uint32_t *size; // pointer for memory efficiency
     void *data;
 } metadataBlockData_t;
 
@@ -50,7 +50,7 @@ typedef struct metadataBlock {
 } metadataBlock_t;
 
 typedef struct flacStream {
-    char flacString[FLAC_STR_SIZE];  // fLaC
+    char flacString[FLAC_STR_SIZE]; // fLaC
     metadataBlock_t mdBlock;
     // linked list so it only needs to be traversed once
     // metadataBlockHeader_t streamInfo;
@@ -60,4 +60,4 @@ typedef struct flacStream {
 
 void flac_read(flacStream_t *ff, FILE *in);
 
-#endif  // FLAC_H
+#endif // FLAC_H
