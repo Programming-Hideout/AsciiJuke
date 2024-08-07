@@ -2,12 +2,14 @@
 #define WAV_H
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
+
 typedef struct wavHeader {
     // beware: the string doesn't end until there's a null char
-    // so it may read more than necessary
+    // so it's going to read more than than necessary
     unsigned char chunkId[4];
     uint32_t chunkSize;
     unsigned char format[4];
@@ -28,7 +30,10 @@ typedef struct wavHeader {
 } wavHeader_t;
 
 wavHeader_t wav_extract_header(FILE *in);
-uint8_t *wav_read_entire_data_chunk(wavHeader_t wav_header, FILE *in);
-uint8_t *wav_read_next_sample(wavHeader_t wav_header, FILE *in);
+bool is_valid_wav_file(FILE *in);
+
+void wav_read_entire_data_chunk(uint8_t* buffer,wavHeader_t wav_header, FILE *in);
+void wav_read_next_sample(uint8_t* buffer, wavHeader_t wav_header, FILE *in);
+void wav_read_samples(uint8_t* buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *in);
 
 #endif // WAV_H
