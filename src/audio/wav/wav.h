@@ -18,7 +18,7 @@ typedef struct wavHeader {
     uint16_t audioFormat;
     uint16_t numChannels;
     uint32_t sampleRate;
-    uint32_t byteRate;
+    uint32_t byteRate; // bitsPerSample/8 * sampleRate
     uint16_t blockAllign;
     uint16_t bitsPerSample;
 
@@ -28,5 +28,7 @@ typedef struct wavHeader {
 } wavHeader_t;
 
 wavHeader_t wav_extract_header(FILE *in);
+uint8_t *wav_read_entire_data_chunk(wavHeader_t wav_header, FILE *in);
+uint8_t *wav_read_next_sample(wavHeader_t wav_header, FILE *in);
 
 #endif // WAV_H
