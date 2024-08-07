@@ -4,24 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* typedef struct streamInfo {
-    uint64_t minBlockSize;
-    uint64_t maxBlockSize;
-    uint64_t minFrameSize;
-    uint64_t maxFrameSize;
-    uint64_t sampleRate;
-    uint64_t numChannels;
-    uint64_t bitsPerSample;
-    uint64_t totalSamples;
-    uint8_t md5sum[16];
-} streamInfo_t;
-
-typedef struct metadataBlock {
-    uint8_t lastBlock;
-    uint8_t blockType;
-    uint8_t *data;
-} metadataBlock_t;
-
+/*
 typedef struct audioFrame {
     uint8_t syncCode[14];
     uint8_t reserved;
@@ -33,14 +16,6 @@ typedef struct audioFrame {
     uint8_t sampleNumber;
     uint8_t crc8;
 } audioFrame_t;
-
-
-    // char metadataBlockHeader[4];
-    // void * application;
-    void *padding;
-    // char *vorbisComment;
-    // char *cueSheet;
-    // char *picture;
 */
 
 // LINK:
@@ -58,6 +33,9 @@ void flac_mh_extract(metadataBlockHeader_t *mh, uint32_t data) {
     mh->blockType = (blockTypes_e)((data >> 24) & 0x7f);
     // The last 24 bits are the blockSize
     mh->blockSize = (data >> 0) & 0xffffff;
+}
+void flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
+    //
 }
 
 void flac_read(flacStream_t *ff, FILE *in) {
@@ -81,5 +59,5 @@ void flac_read(flacStream_t *ff, FILE *in) {
         mdBlock.data.data = malloc(mdBlock.head.blockSize);
         fread(mdBlock.data.data, sizeof(uint8_t), mdBlock.head.blockSize, in);
         // fseek(in, mdBlock.head.blockSize, SEEK_CUR);
-    } while (mdBlock.head.isLastBlock == 0);
+    } while (mdBlock.head.isLastBlock == NOT_LAST_BLOCK);
 }

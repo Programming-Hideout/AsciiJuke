@@ -8,9 +8,26 @@
 #define FLAC_STRING "fLaC"
 #define FLAC_STR_SIZE 4
 
-typedef struct audioFrame {
+/* typedef struct audioFrame {
     //
-} audioFrame_t;
+} audioFrame_t; */
+
+typedef struct bt_streamInfo {
+    uint16_t minBlockSize;
+    uint16_t maxBlockSize;
+    uint32_t minFrameSize;
+    uint32_t maxFrameSize;
+    uint32_t sampleRate;
+    uint8_t numChannels;
+    uint8_t bitsPerSample;
+    uint64_t totalSamples;
+    uint64_t md5sum[2];
+} bt_streamInfo_t;
+
+typedef enum lastBlockFlag {
+    NOT_LAST_BLOCK = 0,
+    LAST_BLOCK = 1,
+} lastBlockFlag_e;
 
 typedef enum blockTypes {
     STREAMINFO = 0,
@@ -21,11 +38,6 @@ typedef enum blockTypes {
     CUESHEET = 5,
     PICTURE = 6,
 } blockTypes_e;
-
-typedef enum lastBlockFlag {
-    NOT_LAST_BLOCK = 0,
-    LAST_BLOCK = 1,
-} lastBlockFlag_e;
 
 typedef struct metadataBlockHeader {
     lastBlockFlag_e isLastBlock; // 1 if it is, 0 if not.  1 Bit
