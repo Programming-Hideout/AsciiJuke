@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "flac/flac.h"
+#include "audio/flac/flac.h"
 
 int main() {
     // printf("Hello, World!");
