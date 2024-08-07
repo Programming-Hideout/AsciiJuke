@@ -44,7 +44,7 @@ typedef struct metadataBlockData {
 typedef struct metadataBlock {
     metadataBlockHeader_t head;
     metadataBlockData_t data;
-    //TODO: uint32_t xorVal;  // XOR linked list of metadata blocks
+    // TODO: uint32_t xorVal;  // XOR linked list of metadata blocks
     struct metadataBlock *prev;
     struct metadataBlock *next;
 } metadataBlock_t;

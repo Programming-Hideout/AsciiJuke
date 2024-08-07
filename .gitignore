@@ -1,5 +1,6 @@
 /bin
 /build
 juke
-**/*.o
-**/*.flac
+/**/*.o
+/**/*.flac
+src/flac/flac.o
