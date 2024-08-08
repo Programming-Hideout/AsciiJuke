@@ -27,7 +27,7 @@ end
 workspace "AsciiJuke"
 do
     configurations { "Debug", "Release" }
-    location "build"
+    location "./"
 
     platforms { "x64", "x32" }
 
@@ -37,10 +37,10 @@ end
 
 project "AsciiJuke"
 do
-    location "build/project"
+    location "./project"
     kind "ConsoleApp"
     language "C"
-    targetdir "build/bin/%{cfg.buildcfg}"
+    targetdir "./bin/%{cfg.buildcfg}"
     toolset "clang"
     cdialect "C11"
 
