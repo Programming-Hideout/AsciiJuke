@@ -20,7 +20,7 @@ typedef struct wavHeader {
     uint16_t numChannels;
     uint32_t sampleRate;
     uint32_t byteRate; // bitsPerSample/8 * sampleRate
-    uint16_t blockAllign;
+    uint16_t sampleBlockSize; // bitsPerSample/8 * numChannels
     uint16_t bitsPerSample;
 
     // data sub-chunk
@@ -28,11 +28,23 @@ typedef struct wavHeader {
     uint32_t dataSubchunkSize;
 } wavHeader_t;
 
-wavHeader_t wav_extract_header(FILE *in);
-bool is_valid_wav_file(FILE *in);
+wavHeader_t wav_extract_header(FILE *stream);
+bool is_valid_wav_file(FILE *stream);
 
-void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *in);
-void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *in);
-void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *in);
+void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
+void wav_read_next_frame(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
+void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames, FILE *stream);
+
+void wav_stereo_split_channels(uint8_t *rightch_buffer, uint8_t *leftch_buffer, uint8_t *original_buffer, wavHeader_t wav_header);
+
+#ifndef DEBUG
+#define DEBUG
+#endif
+
+#ifdef DEBUG
+
+void wav_print_header(wavHeader_t wav_header);
+
+#endif // DEBUG
 
 #endif // WAV_H

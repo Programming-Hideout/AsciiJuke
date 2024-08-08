@@ -59,7 +59,7 @@ void flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
 
     printf("\n");
 }
-void flac_blocktype_extract(metadataBlock_t *mb, void *data) {
+void flac_blocktype_extract(metadataBlock_t *mb, __attribute__((unused)) void *data) {
     switch (mb->head.blockType) {
     case STREAMINFO:
         mb->data.data = malloc(sizeof(bt_streamInfo_t));

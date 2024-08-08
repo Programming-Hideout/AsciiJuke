@@ -3,73 +3,82 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define START_OF_DATA_SUBCHUNK 40
+wavHeader_t wav_extract_header(FILE *stream) {
+    assert(stream && "The file pointer should be valid");
 
-wavHeader_t wav_extract_header(FILE *in) {
-    assert(in && "The file pointer should be valid");
-
-    rewind(in); // set file pointer to the start of the file
+    rewind(stream); // set file pointer to the start of the file
 
     wavHeader_t wav_header;
-    fread(&wav_header, sizeof(wavHeader_t), 1, in);
+    fread(&wav_header, sizeof(wavHeader_t), 1, stream);
 
     return wav_header;
 }
 
-bool is_valid_wav_file(FILE *in) {
-    assert(in && "The file pointer should be valid");
+bool is_valid_wav_file(FILE *stream) {
+    assert(stream && "The file pointer should be valid");
 
-    fseek(in, 0, SEEK_END);
-    long file_size = ftell(in);
+    fseek(stream, 0, SEEK_END);
+    unsigned long file_size = ftell(stream);
 
     if (file_size <= sizeof(wavHeader_t)) {
         return false;
     }
 
-    rewind(in);
+    rewind(stream);
 
-    wavHeader_t wav_header = wav_extract_header(in);
+    wavHeader_t wav_header = wav_extract_header(stream);
     if (file_size != (wav_header.chunkSize + 8)) {
         return false;
     }
 
-    if (wav_header.dataSubchunkSize != (file_size - START_OF_DATA_SUBCHUNK)) {
-        return false;
-    }
+    // if (wav_header.dataSubchunkSize != (file_size - sizeof(wavHeader_t))) {
+    //     return false;
+    // }
 
     return true; // seems legit
 }
 
-// this loads the whole file into memory,
-// we need a way to divide this into buffers
-void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *in) {
+void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
 
-    assert(in && "The file pointer should be valid");
+    assert(stream && "The file pointer should be valid");
     assert((sizeof(buffer) >= wav_header.dataSubchunkSize) &&
            "The buffer size should be enough to contain the data");
 
-    int result = fseek(in, sizeof(wavHeader_t), 0);
+    int result = fseek(stream, sizeof(wavHeader_t), 0);
 
     assert(result == 0);
 
-    fread(buffer, wav_header.dataSubchunkSize, 1, in);
+    fread(buffer, wav_header.dataSubchunkSize, 1, stream);
 }
 
-// it should ammount to one second of data
-void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *in) {
+void wav_read_next_frame(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
 
-    assert(in && "The file pointer should be valid");
-    assert((sizeof(buffer) >= sizeof(wav_header.byteRate)) &&
+    assert(stream && "The file pointer should be valid");
+    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize)) &&
            "The buffer size should be enough to contain the data");
 
-    fread(buffer, wav_header.byteRate, 1, in);
+    fread(buffer, wav_header.sampleBlockSize, 1, stream);
 }
 
-void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *in) {
+void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames, FILE *stream) {
 
-    assert(in && "The file pointer should be valid");
-    assert((sizeof(buffer) >= sizeof(wav_header.byteRate * n_samples)) &&
+    assert(stream && "The file pointer should be valid");
+    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize * n_frames)) &&
            "The buffer size should be enough to contain the data");
 
-    fread(buffer, wav_header.byteRate * n_samples, 1, in);
+    fread(buffer, wav_header.sampleBlockSize * n_frames, 1, stream);
 }
+
+#ifdef DEBUG
+
+void wav_print_header(wavHeader_t wav_header) {
+    printf("File size - 8 bytes: %i\n", wav_header.chunkSize);
+    printf("Audio format: %i\n", wav_header.audioFormat);
+    printf("Number of channels: %i\n", wav_header.numChannels);
+    printf("Sample rate: %iHz\n", wav_header.sampleRate);
+    printf("Byte rate: %iBytes/s\n", wav_header.byteRate);
+    printf("Sample block size: %i Bytes\n", wav_header.sampleBlockSize);
+    printf("Bits per sample: %i bits\n", wav_header.bitsPerSample);
+}
+
+#endif
