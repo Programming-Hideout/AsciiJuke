@@ -19,6 +19,20 @@ typedef struct oggHeader {
     uint8_t pageSegments;
 } oggHeader_t;
 
+/*
+ * The identification header is a short header of only a few fields used to declare the stream definitively as Vorbis,
+ * and provide a few externally relevant pieces of information about the audio stream.
+ */ 
+typedef struct oggVorbisInfo {
+    uint32_t vorbisVersion;
+    uint8_t audioChannels;
+    uint32_t sampleRate;
+    uint32_t bitrateMaximum;
+    uint32_t bitrateNominal;
+    uint32_t bitrateMinimum;
+    void *codecSetup;
+} oggVorbisInfo_t;
+
 oggHeader_t ogg_extract_header(FILE *in);
 bool is_valid_ogg_file(FILE *in);
 
