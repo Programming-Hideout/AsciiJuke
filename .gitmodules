@@ -1,0 +1,3 @@
+[submodule "tools/ecc"]
+	path = tools/ecc
+	url = https://github.com/MattBystrin/premake-ecc.git

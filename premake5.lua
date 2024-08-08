@@ -1,5 +1,6 @@
--- To avoid auto-formatting with neovim:
--- :noautocmd w
+require("tools/ecc/ecc")
+
+
 local libs = {
     {
         name="portaudio",
