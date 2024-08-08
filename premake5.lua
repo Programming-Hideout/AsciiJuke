@@ -15,6 +15,8 @@ project "AsciiJuke"
     kind "ConsoleApp"
     language "C"
     targetdir "build/bin/%{cfg.buildcfg}"
+    toolset "clang"
+    cdialect "C11"
 
     files { "./src/**.h", "./src/**.c" }
 

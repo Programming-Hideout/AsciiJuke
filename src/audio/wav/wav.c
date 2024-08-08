@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
 wavHeader_t wav_extract_header(FILE *stream) {
     assert(stream && "The file pointer should be valid");
 
@@ -19,7 +18,7 @@ bool is_valid_wav_file(FILE *stream) {
     assert(stream && "The file pointer should be valid");
 
     fseek(stream, 0, SEEK_END);
-    long file_size = ftell(stream);
+    unsigned long file_size = ftell(stream);
 
     if (file_size <= sizeof(wavHeader_t)) {
         return false;
@@ -32,14 +31,14 @@ bool is_valid_wav_file(FILE *stream) {
         return false;
     }
 
-    if (wav_header.dataSubchunkSize != (file_size - sizeof(wavHeader_t))) {
-        return false;
-    }
+    // if (wav_header.dataSubchunkSize != (file_size - sizeof(wavHeader_t))) {
+    //     return false;
+    // }
 
     return true; // seems legit
 }
 
-void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
+void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
 
     assert(stream && "The file pointer should be valid");
     assert((sizeof(buffer) >= wav_header.dataSubchunkSize) &&
@@ -52,7 +51,7 @@ void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *s
     fread(buffer, wav_header.dataSubchunkSize, 1, stream);
 }
 
-void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
+void wav_read_next_frame(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
 
     assert(stream && "The file pointer should be valid");
     assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize)) &&
@@ -61,25 +60,25 @@ void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *stream)
     fread(buffer, wav_header.sampleBlockSize, 1, stream);
 }
 
-void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *stream) {
+void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames, FILE *stream) {
 
     assert(stream && "The file pointer should be valid");
-    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize * n_samples)) &&
+    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize * n_frames)) &&
            "The buffer size should be enough to contain the data");
 
-    fread(buffer, wav_header.sampleBlockSize * n_samples, 1, stream);
+    fread(buffer, wav_header.sampleBlockSize * n_frames, 1, stream);
 }
 
 #ifdef DEBUG
 
 void wav_print_header(wavHeader_t wav_header) {
-    printf("File size - 8 bytes: %i", wav_header.chunkSize);
-    printf("Audio format: %i", wav_header.audioFormat);
-    printf("Number of channels: %i", wav_header.numChannels);
-    printf("Sample rate: %iHz", wav_header.sampleRate);
-    printf("Byte rate: %iBytes/s", wav_header.byteRate);
-    printf("Sample block size: %i Bytes", wav_header.sampleBlockSize);
-    printf("Bits per sample: %i bits", wav_header.bitsPerSample);
+    printf("File size - 8 bytes: %i\n", wav_header.chunkSize);
+    printf("Audio format: %i\n", wav_header.audioFormat);
+    printf("Number of channels: %i\n", wav_header.numChannels);
+    printf("Sample rate: %iHz\n", wav_header.sampleRate);
+    printf("Byte rate: %iBytes/s\n", wav_header.byteRate);
+    printf("Sample block size: %i Bytes\n", wav_header.sampleBlockSize);
+    printf("Bits per sample: %i bits\n", wav_header.bitsPerSample);
 }
 
 #endif

@@ -31,13 +31,19 @@ typedef struct wavHeader {
 wavHeader_t wav_extract_header(FILE *stream);
 bool is_valid_wav_file(FILE *stream);
 
-void wav_read_entire_data_chunk(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
-void wav_read_next_sample(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
-void wav_read_samples(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_samples, FILE *stream);
+void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
+void wav_read_next_frame(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
+void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames, FILE *stream);
+
+void wav_stereo_split_channels(uint8_t *rightch_buffer, uint8_t *leftch_buffer, uint8_t *original_buffer, wavHeader_t wav_header);
+
+#ifndef DEBUG
+#define DEBUG
+#endif
 
 #ifdef DEBUG
 
-void wav_print_header(wawavHeader_t wav_header);
+void wav_print_header(wavHeader_t wav_header);
 
 #endif // DEBUG
 
