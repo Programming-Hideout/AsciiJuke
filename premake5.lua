@@ -1,6 +1,3 @@
-require("tools/ecc/ecc")
-
-
 local libs = {
     {
         name="portaudio",
