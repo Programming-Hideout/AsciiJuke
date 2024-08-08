@@ -1,6 +1,9 @@
 /build
 /libs
+/project
 juke
 /**/*.o
 /**/*.flac
 src/flac/flac.o
+Makefile
+AsciiJuke.sln
