@@ -1,0 +1,233 @@
+[
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/flac.o",
+      "../src/audio/flac/flac.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/flac/flac.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/flac.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/flac.o",
+      "../src/audio/flac/flac.h"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/flac/flac.h",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/flac.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/ogg.o",
+      "../src/audio/ogg/ogg.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/ogg/ogg.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/ogg.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/ogg.o",
+      "../src/audio/ogg/ogg.h"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/ogg/ogg.h",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/ogg.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/streaming.o",
+      "../src/audio/streaming.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/streaming.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/streaming.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/streaming.o",
+      "../src/audio/streaming.h"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/streaming.h",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/streaming.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/wav.o",
+      "../src/audio/wav/wav.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/wav/wav.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/wav.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/wav.o",
+      "../src/audio/wav/wav.h"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/audio/wav/wav.h",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/wav.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/main.o",
+      "../src/main.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/main.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/main.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/endians.o",
+      "../src/utils/endians.c"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/utils/endians.c",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/endians.o"
+  },
+  {
+    "arguments": [
+      "clang",
+      "-MD",
+      "-MP",
+      "-DDEBUG",
+      "-m64",
+      "-Werror",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-c",
+      "-o",
+      "obj/x64/Debug/endians.o",
+      "../src/utils/endians.h"
+    ],
+    "directory": "/home/cap/AsciiJuke/project",
+    "file": "/home/cap/AsciiJuke/src/utils/endians.h",
+    "output": "/home/cap/AsciiJuke/project/obj/x64/Debug/endians.o"
+  }
+]

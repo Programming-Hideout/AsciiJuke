@@ -7,3 +7,5 @@ juke
 src/flac/flac.o
 Makefile
 AsciiJuke.sln
+/bin
+.cache
