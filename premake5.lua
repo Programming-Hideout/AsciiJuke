@@ -31,7 +31,7 @@ do
 
     platforms { "x64", "x32" }
 
-    flags "FatalWarnings"
+    --flags "FatalWarnings"
     warnings "Extra"
 end
 

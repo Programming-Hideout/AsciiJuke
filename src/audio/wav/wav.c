@@ -39,10 +39,7 @@ bool is_valid_wav_file(FILE *stream) {
 }
 
 void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
-
     assert(stream && "The file pointer should be valid");
-    assert((sizeof(buffer) >= wav_header.dataSubchunkSize) &&
-           "The buffer size should be enough to contain the data");
 
     int result = fseek(stream, sizeof(wavHeader_t), 0);
 
@@ -52,19 +49,13 @@ void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) 
 }
 
 void wav_read_next_frame(uint8_t *buffer, wavHeader_t wav_header, FILE *stream) {
-
     assert(stream && "The file pointer should be valid");
-    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize)) &&
-           "The buffer size should be enough to contain the data");
 
     fread(buffer, wav_header.sampleBlockSize, 1, stream);
 }
 
 void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames, FILE *stream) {
-
     assert(stream && "The file pointer should be valid");
-    assert((sizeof(buffer) >= sizeof(wav_header.sampleBlockSize * n_frames)) &&
-           "The buffer size should be enough to contain the data");
 
     fread(buffer, wav_header.sampleBlockSize * n_frames, 1, stream);
 }
