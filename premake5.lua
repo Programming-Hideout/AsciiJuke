@@ -1,26 +1,28 @@
-local libs = {
-    {
-        name="portaudio",
-        extracted_name="portaudio-19.7.0",
-        url="https://github.com/PortAudio/portaudio/archive/refs/tags/v19.7.0.zip",
-    }
-}
-
 if not os.isdir("./libs") then
     os.mkdir("./libs")
 end
 
-for i, lib in ipairs(libs) do
-    local file_name = "./libs/" .. lib.name .. ".zip";
-    local result_str, response_code = http.download(lib.url, file_name)
+-- PORTAUDIO
+if not os.isfile("./libs/libportaudio.a") then
+    local result_str, response_code = http.download(
+        "https://github.com/PortAudio/portaudio/archive/refs/tags/v19.7.0.zip", "./libs/portaudio.zip")
 
     if result_str == "OK" then
-        print(lib.name .. " downloaded\n")
-        zip.extract(file_name, "./libs/")
-        os.rename("./libs/" .. lib.extracted_name, "./libs/" .. lib.name)
+        print("PortAudio downloaded\n")
+        zip.extract("./libs/portaudio.zip", "./libs/")
+        os.rename("./libs/portaudio-19.7.0", "./libs/portaudio")
+        os.chdir("./libs/portaudio")
+        os.execute("./configure && make")
+        os.copyfile("./lib/.libs/libportaudio.a", "../libportaudio.a")
+        os.chdir("..")
+        os.rmdir("portaudio-19.7.0")
+        os.remove("portaudio.zip")
+        os.chdir("..")
+        
     end
 end
 
+-- CONFIG
 
 workspace "AsciiJuke"
 do
@@ -45,6 +47,9 @@ do
     files { "./src/**.h", "./src/**.c" }
 
     externalincludedirs { "./libs/portaudio/include" }
+
+    libdirs { "./libs/" }
+    links { ":libportaudio.a", "rt", "m", "asound" }
 
     filter "configurations:Debug"
     do
