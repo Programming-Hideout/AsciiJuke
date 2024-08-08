@@ -3,8 +3,9 @@
 #include <stdint.h>
 
 PaError initialize_portaudio() { return Pa_Initialize(); }
-PaError close_portaudio() { return Pa_Terminate(); }
+PaError terminate_portaudio() { return Pa_Terminate(); }
 
+// TODO: delete this
 typedef struct streamData {
     int16_t right_phase;
     int16_t left_phase;
