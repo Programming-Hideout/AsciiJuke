@@ -57,7 +57,9 @@ void __flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
     // everything is treated as a byte so to convert from byte to uint i concat
     si->minBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
     byteOffset += 2; // 2 bytes were managed
+    printf("%u\n", si->minBlockSize);
     si->maxBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
+    printf("%u\n", si->maxBlockSize);
     byteOffset += 2;
     if (si->minBlockSize == si->maxBlockSize) {
         si->fixedBlockSize = true;
@@ -74,6 +76,7 @@ void __flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
     si->minFrameSize = u24Storage;
     si->knownMinFrameSize = !!u24Storage; // If its 0 it is implied the value is not know
     byteOffset += 3;
+    printf("minFrameSize: %u\n", si->minFrameSize);
 
     u24Storage = //   7                              8                                 9
         (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
@@ -81,35 +84,35 @@ void __flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
     si->maxFrameSize = u24Storage;
     si->knownMinFrameSize = !!u24Storage;
     byteOffset += 3;
+    printf("maxFrameSize: %u\n", si->maxFrameSize);
 
     u24Storage =
         (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
     u24Storage >>= 4; // we made it to haskell :cheer:
-    u24Storage = swap_uint32(u24Storage) >> 12;
+    u24Storage = swap_uint32(u24Storage) >> 8;
     ERROR((u24Storage != 0), "invalid sample rate");
     si->sampleRate = u24Storage;
     byteOffset += 2; // now this is shit. We extract 20 bits, leaving 4
 
     si->numChannels = data_ptr[byteOffset] >> 5 & 0x7;
+    printf("numChannels: %u\n", si->numChannels);
     si->bitsPerSample = data_ptr[byteOffset] & 0x1f;
+    printf("bitsPerSample: %u\n", si->bitsPerSample);
     // we are at 12 now bits now so we can increment byteOffset
     byteOffset += 1;
 
     // storage size is 36 bits. First 4 bits then bitshift
     si->totalSamples = ((data_ptr[byteOffset] & 0xf) << 24) | (data_ptr[byteOffset + 1] << 16) |
                        (data_ptr[byteOffset] << 8) | (data_ptr[byteOffset] << 0);
+    printf("totalSamples: %lu\n", si->totalSamples);
     byteOffset += 5;
 
     si->md5sum[0] = data_ptr[0];
     si->md5sum[1] = data_ptr[1];
+    printf("minFrameSize: %lu", si->md5sum[0]);
+    printf("%lu\n", si->md5sum[1]);
     byteOffset += 16;
     // FIXME: }}}
-    printf("%ld\n", byteOffset);
-
-    for (int i = byteOffset; i < 34; ++i) {
-        printf("%02x ", data_ptr[i]);
-    }
-    printf("\n");
 }
 
 void __flac_blocktype_extract(metadataBlock_t *mb, void *data) {
@@ -139,7 +142,6 @@ void flac_read(flacStream_t *ff, FILE *in) {
     // Read the first 4 bytes of the file
     fseek(in, 0, SEEK_SET);
     fread(ff->flacString, sizeof(char), FLAC_STR_SIZE, in);
-    printf("%.4s\n", ff->flacString);
 
     // fseek(in, -1, SEEK_CUR);
     uint32_t head_uint;
@@ -149,8 +151,6 @@ void flac_read(flacStream_t *ff, FILE *in) {
         fread(&head_uint, sizeof(uint32_t), 1, in);
         head_uint = swap_uint32(head_uint);
         __flac_mh_extract(&mdBlock.head, head_uint);
-        printf("isLastBlock: %d\nblockType: %d\nblockSize: %d\n", mdBlock.head.isLastBlock,
-               mdBlock.head.blockType, mdBlock.head.blockSize);
         mdBlock.data.size = &mdBlock.head.blockSize;
         dataContainer = malloc(mdBlock.head.blockSize);
         fread(dataContainer, sizeof(uint8_t), mdBlock.head.blockSize, in);
