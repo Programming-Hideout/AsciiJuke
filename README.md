@@ -8,6 +8,10 @@ It will be developed in C and it’s main audience will be *nix users (mainly li
 ## Project setup
 
 First make a fork of the codebase, then clone your fork on your machine.
+```
+git clone --recursive https://github.com/<your-name>/AsciiJuke
+```
+
 After that you can run premake:
 
 ```bash
