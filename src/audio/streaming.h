@@ -14,4 +14,8 @@ static int portaudio_callback(const void *input_buffer, void *output_buffer, uns
 PaError portaudio_open_default_stream(PaStream *stream, uint8_t audio_channels_count, uint32_t sample_rate,
                                       uint16_t frames_per_buffer, uint8_t *data);
 
+#ifdef DEBUG
+void print_pa_error(PaError pa_error);
+#endif
+
 #endif // STREAMING_H
