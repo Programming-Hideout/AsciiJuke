@@ -1,6 +1,8 @@
 #include "flac.h"
 #include "../../utils/endians.h"
+#include "../../utils/errorMacro.h"
 
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +41,7 @@ typedef struct audioFrame {
 // LINK:
 // https://stackoverflow.com/questions/2182002/how-to-convert-big-endian-to-little-endian-in-c-without-using-library-functions
 
-void flac_mh_extract(metadataBlockHeader_t *mh, uint32_t data) {
+void __flac_mh_extract(metadataBlockHeader_t *mh, uint32_t data) {
     // The first bit is the isLastBlock
     mh->isLastBlock = (lastBlockFlag_e)((data >> 31) & 1);
     // The next 7 bits are the blockType
@@ -47,23 +49,74 @@ void flac_mh_extract(metadataBlockHeader_t *mh, uint32_t data) {
     // The last 24 bits are the blockSize
     mh->blockSize = (data >> 0) & 0xffffff;
 }
-void flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
-    printf("\n");
-
+void __flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
     uint8_t *data_ptr = (uint8_t *)data;
+    uint32_t u24Storage = 0; // some ints are not multiples of 8
+    uint64_t byteOffset = 0; // for easier code copy pasting and no hardcoding
 
-    si->minBlockSize = swap_uint16(data_ptr[0] << 8 | data_ptr[1]);
-    printf("minBlockSize: %d\n", si->minBlockSize);
-    si->maxBlockSize = swap_uint16(data_ptr[2] << 8 | data_ptr[3]);
-    printf("maxBlockSize: %d\n", si->maxBlockSize);
+    // everything is treated as a byte so to convert from byte to uint i concat
+    si->minBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
+    byteOffset += 2; // 2 bytes were managed
+    si->maxBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
+    byteOffset += 2;
+    if (si->minBlockSize == si->maxBlockSize) {
+        si->fixedBlockSize = true;
+    }
 
+    // FIXME: {{{
+    // This code may not work and we may need to run external scripts to verify
+    // Which I will do but I am telling you lot that this code, after this point,
+    // was written with uncertainty, hopes, and prayers.
+    // This code supports Heisenbergs Uncertainty Principle
+    u24Storage = //   4                              5                                 6
+        (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
+    u24Storage = swap_uint32(u24Storage) >> 8;
+    si->minFrameSize = u24Storage;
+    si->knownMinFrameSize = !!u24Storage; // If its 0 it is implied the value is not know
+    byteOffset += 3;
+
+    u24Storage = //   7                              8                                 9
+        (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
+    u24Storage = swap_uint32(u24Storage) >> 8;
+    si->maxFrameSize = u24Storage;
+    si->knownMinFrameSize = !!u24Storage;
+    byteOffset += 3;
+
+    u24Storage =
+        (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
+    u24Storage >>= 4; // we made it to haskell :cheer:
+    u24Storage = swap_uint32(u24Storage) >> 12;
+    ERROR((u24Storage != 0), "invalid sample rate");
+    si->sampleRate = u24Storage;
+    byteOffset += 2; // now this is shit. We extract 20 bits, leaving 4
+
+    si->numChannels = data_ptr[byteOffset] >> 5 & 0x7;
+    si->bitsPerSample = data_ptr[byteOffset] & 0x1f;
+    // we are at 12 now bits now so we can increment byteOffset
+    byteOffset += 1;
+
+    // storage size is 36 bits. First 4 bits then bitshift
+    si->totalSamples = ((data_ptr[byteOffset] & 0xf) << 24) | (data_ptr[byteOffset + 1] << 16) |
+                       (data_ptr[byteOffset] << 8) | (data_ptr[byteOffset] << 0);
+    byteOffset += 5;
+
+    si->md5sum[0] = data_ptr[0];
+    si->md5sum[1] = data_ptr[1];
+    byteOffset += 16;
+    // FIXME: }}}
+    printf("%ld\n", byteOffset);
+
+    for (int i = byteOffset; i < 34; ++i) {
+        printf("%02x ", data_ptr[i]);
+    }
     printf("\n");
 }
-void flac_blocktype_extract(metadataBlock_t *mb, __attribute__((unused)) void *data) {
+
+void __flac_blocktype_extract(metadataBlock_t *mb, void *data) {
     switch (mb->head.blockType) {
     case STREAMINFO:
         mb->data.data = malloc(sizeof(bt_streamInfo_t));
-        flac_blocktype_streaminfo_extract(mb->data.data, mb->data.data);
+        __flac_blocktype_streaminfo_extract(mb->data.data, data);
         break;
     case PADDING:
         break;
@@ -95,13 +148,13 @@ void flac_read(flacStream_t *ff, FILE *in) {
     do {
         fread(&head_uint, sizeof(uint32_t), 1, in);
         head_uint = swap_uint32(head_uint);
-        flac_mh_extract(&mdBlock.head, head_uint);
+        __flac_mh_extract(&mdBlock.head, head_uint);
         printf("isLastBlock: %d\nblockType: %d\nblockSize: %d\n", mdBlock.head.isLastBlock,
                mdBlock.head.blockType, mdBlock.head.blockSize);
         mdBlock.data.size = &mdBlock.head.blockSize;
         dataContainer = malloc(mdBlock.head.blockSize);
         fread(dataContainer, sizeof(uint8_t), mdBlock.head.blockSize, in);
-        flac_blocktype_extract(&mdBlock, dataContainer);
+        __flac_blocktype_extract(&mdBlock, dataContainer);
         // fseek(in, mdBlock.head.blockSize, SEEK_CUR);
     } while (mdBlock.head.isLastBlock == NOT_LAST_BLOCK);
 }
