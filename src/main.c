@@ -32,20 +32,25 @@ int main(int argc, char **argv) {
     assert(is_valid && "It seems that the .wav file is corrupted");
 
     wavHeader_t wav_header = wav_extract_header(file);
+    
+    printf("\nWav header:\n");
+    wav_print_header(wav_header);
+
     fseek(file, sizeof(wavHeader_t), 0);
 
     PaError err = initialize_portaudio();
-    assert(err == 0);
+    assert(err == 0 && "Unable to initialize portaudio");
 
     uint8_t *data = malloc(wav_header.dataSubchunkSize);
 
     wav_read_all_frames(data, wav_header, file);
 
-    PaStream *pa_stream = NULL;
-    portaudio_open_default_stream(pa_stream, wav_header.numChannels, wav_header.sampleRate, 256, data);
+    PaStream *pa_stream;
+    portaudio_open_default_stream(pa_stream, 2, wav_header.sampleRate, 256, data);
 
     err = Pa_StartStream(pa_stream);
-    assert(err == 0);
+    print_pa_error(err);
+    assert(err == 0 && "Unable to start portaudio stream");
     
     while(Pa_IsStreamActive(pa_stream) == 1) {
         Pa_Sleep(1000);
