@@ -15,8 +15,11 @@
 typedef struct bt_streamInfo {
     uint16_t minBlockSize;
     uint16_t maxBlockSize;
+    bool fixedBlockSize;
     uint32_t minFrameSize;
+    bool knownMaxFrameSize;
     uint32_t maxFrameSize;
+    bool knownMinFrameSize;
     uint32_t sampleRate;
     uint8_t numChannels;
     uint8_t bitsPerSample;
