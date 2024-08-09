@@ -4,22 +4,11 @@ end
 
 -- PORTAUDIO
 if not os.isfile("./libs/libportaudio.a") then
-    local result_str, response_code = http.download(
-        "https://github.com/PortAudio/portaudio/archive/refs/tags/v19.7.0.zip", "./libs/portaudio.zip")
-
-    if result_str == "OK" then
-        print("PortAudio downloaded\n")
-        zip.extract("./libs/portaudio.zip", "./libs/")
-        os.rename("./libs/portaudio-19.7.0", "./libs/portaudio")
-        os.chdir("./libs/portaudio")
-        os.execute("./configure && make")
-        os.copyfile("./lib/.libs/libportaudio.a", "../libportaudio.a")
-        os.chdir("..")
-        os.rmdir("portaudio-19.7.0")
-        os.remove("portaudio.zip")
-        os.chdir("..")
-        
-    end
+    os.chdir("./libs/portaudio")
+    os.execute("./configure && make")
+    os.copyfile("./lib/.libs/libportaudio.a", "../libportaudio.a")
+    os.chdir("..")
+    os.chdir("..")
 end
 
 -- CONFIG
