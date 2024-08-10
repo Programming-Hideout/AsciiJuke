@@ -15,8 +15,8 @@ do
     kind "ConsoleApp"
     language "C"
     targetdir "./bin/%{cfg.buildcfg}"
-    toolset "clang"
-    cdialect "C11"
+
+    cdialect "C17"
 
     files { "./src/**.h", "./src/**.c" }
 
