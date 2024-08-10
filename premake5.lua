@@ -22,6 +22,16 @@ do
 
     externalincludedirs { "./libs/miniaudio" }
 
+    filter { "system:linux" }
+    do
+        links { "m", "pthread", "dl" }
+    end
+
+    filter { "system:bsd" }
+    do
+        links { "m", "pthread" }
+    end
+
     filter "configurations:Debug"
     do
         defines { "DEBUG" }
