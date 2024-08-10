@@ -7,5 +7,6 @@ src/flac/flac.o
 Makefile
 AsciiJuke.sln
 /bin
-.cache
+.cache/
 src/audio/flac/app
+.vs/
