@@ -1,1 +1,2 @@
--Ilibs/portaudio/include
+-Ilibs/miniaudio
+-DDEBUG
