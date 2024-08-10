@@ -1,9 +1,9 @@
-BlockSizeMin	2304                                block_size_min 2304
-BlockSizeMax	2304                                block_size_max 2304
-FrameSizeMin	16                                  frame_size_min 16
-FrameSizeMax	12087                               frame_size_max 12087
-SampleRate	32000                                 sample_rate 32000
-Channels	2                                       channels 2
-BitsPerSample	24                                  bits_per_sample 24
-TotalSamples	442851                              total_samples 442851
-MD5Signature	61c4d88567b1b83333cffa81ba2b794a    md5_signature 61c4d88567b1b83333cffa81ba2b794a
+BlockSizeMin	2304
+BlockSizeMax	2304
+FrameSizeMin	16
+FrameSizeMax	12087
+SampleRate	32000
+Channels	2
+BitsPerSample	24
+TotalSamples	442851
+MD5Signature	61c4d88567b1b83333cffa81ba2b794a
