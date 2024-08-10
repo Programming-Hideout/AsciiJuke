@@ -12,3 +12,4 @@ src/audio/flac/app
 .vs/
 **/*.pch
 **/.d
+/pch
