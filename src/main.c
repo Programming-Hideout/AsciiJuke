@@ -5,7 +5,7 @@
 #include "audio/flac/flac.h"
 #include "audio/streaming.h"
 #include "audio/wav/wav.h"
-#include "portaudio.h"
+#include "miniaudio.h"
 
 #define ERROR(cond, msg) assert((printf("%s", (!cond) ? msg : "\0"), cond))
 
@@ -38,27 +38,13 @@ int main(int argc, char **argv) {
 
     fseek(file, sizeof(wavHeader_t), 0);
 
-    PaError err = initialize_portaudio();
-    assert(err == 0 && "Unable to initialize portaudio");
 
     uint8_t *data = malloc(wav_header.dataSubchunkSize);
 
     wav_read_all_frames(data, wav_header, file);
 
-    PaStream *pa_stream;
-    portaudio_open_default_stream(pa_stream, 2, wav_header.sampleRate, 256, data);
-
-    err = Pa_StartStream(pa_stream);
-    print_pa_error(err);
-    assert(err == 0 && "Unable to start portaudio stream");
-    
-    while(Pa_IsStreamActive(pa_stream) == 1) {
-        Pa_Sleep(1000);
-        printf("Streaming music...\n");
-    }
-
     free(data);
-    terminate_portaudio();
+
 
     // i guess that i'm causing a memory leak by not deallocating data
 }
