@@ -8,16 +8,17 @@
 
 #define HEADER_SIZE 27
 
-typedef struct oggHeader {
-    uint32_t capturePattern;
-    uint8_t version;
-    uint8_t headerType;
-    uint64_t granulePosition;
-    uint32_t bitstreamSerialNumber;
-    uint32_t pageSequenceNumber;
-    uint32_t checksum;
-    uint8_t pageSegments;
-} oggHeader_t;
+typedef struct oggPageHeader {
+    char capturePattern[4];            // Always "OggS"
+    uint8_t streamVersion;              // Stream structure version
+    uint8_t typeFlag;                   // Header type flag
+    uint64_t granulePosition;           // Absolute granule position
+    uint32_t streamID;                  // Stream serial number
+    uint32_t pageNumber;                // Page sequence number
+    uint32_t checksum;                  // Page CRC32
+    uint8_t segments;                   // Number of page segments
+    //uint8_t lacingValues[];             // Flexible array member for lacing values - segment sizes
+} __attribute__((packed)) oggPageHeader_t;
 
 /*
  * The identification header is a short header of only a few fields used to declare the stream definitively as Vorbis,
@@ -96,8 +97,9 @@ typedef struct stb_vorbis
 } stb_vorbis;
 
 // Function definitions
-oggHeader_t ogg_extract_header(FILE *in);
+oggPageHeader_t ogg_extract_header(FILE *in);
 bool is_valid_ogg_file(FILE *in);
 static int read_n_bytes(FILE *in, uint8_t *data, int n);
+void print_page_header(oggPageHeader_t *pageHeader);
 
 #endif  /* OGG_H */
