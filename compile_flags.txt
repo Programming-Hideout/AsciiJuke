@@ -1,2 +1,4 @@
--Ilibs/miniaudio
+-Ipch
+-Iinc
+-I
 -DDEBUG
