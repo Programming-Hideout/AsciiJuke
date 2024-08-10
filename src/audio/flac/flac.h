@@ -17,9 +17,9 @@ typedef struct bt_streamInfo {
     uint16_t maxBlockSize;
     bool fixedBlockSize;
     uint32_t minFrameSize;
-    bool knownMaxFrameSize;
-    uint32_t maxFrameSize;
     bool knownMinFrameSize;
+    uint32_t maxFrameSize;
+    bool knownMaxFrameSize;
     uint32_t sampleRate;
     uint8_t numChannels;
     uint8_t bitsPerSample;
@@ -74,5 +74,6 @@ typedef struct flacStream {
 } flacStream_t;
 
 void flac_read(flacStream_t *ff, FILE *in);
+void flac_view_streaminfo(bt_streamInfo_t *si);
 
 #endif // FLAC_H

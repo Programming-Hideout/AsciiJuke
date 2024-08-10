@@ -3,6 +3,7 @@
 #include "../../utils/errorMacro.h"
 
 #include <assert.h>
+#include <endian.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,23 +21,36 @@ typedef struct audioFrame {
     uint8_t crc8;
 } audioFrame_t;
 */
-/*
-    uint8_t *data_ptr = (uint8_t *)data;
-    si->minBlockSize = (data_ptr[0] << 4) | (data_ptr[1] >> 4);
-    si->maxBlockSize = ((data_ptr[1] & 0x0f) << 8) | data_ptr[2];
-    si->minFrameSize = (data_ptr[3] << 16) | (data_ptr[4] << 8) | data_ptr[5];
-    si->maxFrameSize = (data_ptr[6] << 16) | (data_ptr[7] << 8) | data_ptr[8];
-    si->sampleRate = (data_ptr[9] << 12) | (data_ptr[10] << 4) | (data_ptr[11] >> 4);
-    si->numChannels = ((data_ptr[11] & 0x0f) >> 1);
-    si->bitsPerSample = ((data_ptr[11] & 0x01) << 4) | (data_ptr[12] >> 4);
-    si->totalSamples = ((data_ptr[12] & 0x0f) << 36) | (data_ptr[13] << 28) | (data_ptr[14] << 20) |
-                       (data_ptr[15] << 12) | (data_ptr[16] << 4) | (data_ptr[17] >> 4);
-    si->md5sum[0] = ((data_ptr[17] & 0x0f) << 60) | (data_ptr[18] << 52) | (data_ptr[19] << 44) |
-                    (data_ptr[20] << 36) | (data_ptr[21] << 28) | (data_ptr[22] << 20) |
-                    (data_ptr[23] << 12) | (data_ptr[24] << 4) | (data_ptr[25] >> 4);
-    si->md5sum[1] = ((data_ptr[25] & 0x0f) << 60) | (data_ptr[26] << 52) | (data_ptr[27] << 44) |
-                    (data_ptr[28] << 36) | (data_ptr[29] <<1 );
-*/
+
+//*
+#include "flac.h"
+#include <stdio.h>
+
+int main(void) {
+    flacStream_t ff;
+    FILE *in = fopen("./example1.flac", "rb");
+    flac_read(&ff, in);
+    fclose(in);
+    return 0;
+}
+// */
+
+void flac_view_streaminfo(bt_streamInfo_t *si) {
+    printf("╭───╼ %p\n", si);
+    printf("├╼ minBlockSize\t\t╻ (uint16_t)\t→ %u\n", si->minBlockSize);
+    printf("├╼ maxBlockSize\t\t╏ (uint16_t)\t→ %u\n", si->maxBlockSize);
+    printf("├╼ fixedBlockSize\t╏ (bool)\t→ %u\n", si->fixedBlockSize);
+    printf("├╼ minFrameSize\t\t╏ (uint32_t)\t→ %u\n", si->minFrameSize);
+    printf("├╼ knownMinFrameSize\t╏ (bool)\t→ %u\n", si->knownMinFrameSize);
+    printf("├╼ maxFrameSize\t\t╏ (uint32_t)\t→ %u\n", si->maxFrameSize);
+    printf("├╼ knownMaxFrameSize\t╏ (bool)\t→ %u\n", si->knownMaxFrameSize);
+    printf("├╼ sampleRate\t\t╏ (uint32_t)\t→ %u\n", si->sampleRate);
+    printf("\n");
+    printf("├╼ numChannels\t\t╏ (uint8_t)\t→ %u\n", si->numChannels);
+    printf("├╼ bitsPerSample\t╏ (uint8_t)\t→ %u\n", si->bitsPerSample);
+    printf("├╼ totalSamples\t\t╏ (uint64_t)\t→ %lu\n", si->totalSamples);
+    printf("╰╼ md5sum[2]\t\t╹ (uint64_t)\t→ %lu%lu\n", si->md5sum[0], si->md5sum[1]);
+}
 
 // LINK:
 // https://stackoverflow.com/questions/2182002/how-to-convert-big-endian-to-little-endian-in-c-without-using-library-functions
@@ -55,63 +69,52 @@ void __flac_blocktype_streaminfo_extract(bt_streamInfo_t *si, void *data) {
     uint64_t byteOffset = 0; // for easier code copy pasting and no hardcoding
 
     // everything is treated as a byte so to convert from byte to uint i concat
-    si->minBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
+    si->minBlockSize = (data_ptr[byteOffset] << 8) | (data_ptr[byteOffset + 1]);
     byteOffset += 2; // 2 bytes were managed
-    printf("%u\n", si->minBlockSize);
-    si->maxBlockSize = swap_uint16(data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1]);
-    printf("%u\n", si->maxBlockSize);
+    si->maxBlockSize = (data_ptr[byteOffset] << 8) | (data_ptr[byteOffset + 1]);
     byteOffset += 2;
     if (si->minBlockSize == si->maxBlockSize) {
         si->fixedBlockSize = true;
     }
 
-    // FIXME: {{{
-    // This code may not work and we may need to run external scripts to verify
-    // Which I will do but I am telling you lot that this code, after this point,
-    // was written with uncertainty, hopes, and prayers.
-    // This code supports Heisenbergs Uncertainty Principle
     u24Storage = //   4                              5                                 6
         (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
-    u24Storage = swap_uint32(u24Storage) >> 8;
     si->minFrameSize = u24Storage;
     si->knownMinFrameSize = !!u24Storage; // If its 0 it is implied the value is not know
     byteOffset += 3;
-    printf("minFrameSize: %u\n", si->minFrameSize);
 
     u24Storage = //   7                              8                                 9
         (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
-    u24Storage = swap_uint32(u24Storage) >> 8;
     si->maxFrameSize = u24Storage;
-    si->knownMinFrameSize = !!u24Storage;
+    si->knownMaxFrameSize = !!u24Storage;
     byteOffset += 3;
-    printf("maxFrameSize: %u\n", si->maxFrameSize);
 
-    u24Storage =
+    u24Storage = //  10                             11                                12
         (data_ptr[byteOffset] << 16) | (data_ptr[byteOffset + 1] << 8) | (data_ptr[byteOffset + 2] << 0);
     u24Storage >>= 4; // we made it to haskell :cheer:
-    u24Storage = swap_uint32(u24Storage) >> 8;
     ERROR((u24Storage != 0), "invalid sample rate");
     si->sampleRate = u24Storage;
     byteOffset += 2; // now this is shit. We extract 20 bits, leaving 4
+                     // [bo][bo][bo][bo] [nc][nc][nc] [ps][ps][ps][ps][ps] [_][_][_][_]
 
-    si->numChannels = data_ptr[byteOffset] >> 5 & 0x7;
-    printf("numChannels: %u\n", si->numChannels);
+    // FIXME: {{{
+    // This code may not work and we may need to run external scripts to verify
+    uint16_t extraction = data_ptr[byteOffset] << 8 | data_ptr[byteOffset + 1];
+    printf("%u \n", extraction >> 8 & 0x7);
+    si->numChannels = (data_ptr[byteOffset] >> 0) & 0x7;
     si->bitsPerSample = data_ptr[byteOffset] & 0x1f;
-    printf("bitsPerSample: %u\n", si->bitsPerSample);
     // we are at 12 now bits now so we can increment byteOffset
     byteOffset += 1;
 
     // storage size is 36 bits. First 4 bits then bitshift
     si->totalSamples = ((data_ptr[byteOffset] & 0xf) << 24) | (data_ptr[byteOffset + 1] << 16) |
                        (data_ptr[byteOffset] << 8) | (data_ptr[byteOffset] << 0);
-    printf("totalSamples: %lu\n", si->totalSamples);
     byteOffset += 5;
 
     si->md5sum[0] = data_ptr[0];
     si->md5sum[1] = data_ptr[1];
-    printf("minFrameSize: %lu", si->md5sum[0]);
-    printf("%lu\n", si->md5sum[1]);
     byteOffset += 16;
+    flac_view_streaminfo(si);
     // FIXME: }}}
 }
 
