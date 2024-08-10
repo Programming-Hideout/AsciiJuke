@@ -1,18 +1,3 @@
-if not os.isdir("./libs") then
-    os.mkdir("./libs")
-end
-
--- PORTAUDIO
-if not os.isfile("./libs/libportaudio.a") then
-    os.chdir("./libs/portaudio")
-    os.execute("./configure && make")
-    os.copyfile("./lib/.libs/libportaudio.a", "../libportaudio.a")
-    os.chdir("..")
-    os.chdir("..")
-end
-
--- CONFIG
-
 workspace "AsciiJuke"
 do
     configurations { "Debug", "Release" }
@@ -35,10 +20,7 @@ do
 
     files { "./src/**.h", "./src/**.c" }
 
-    externalincludedirs { "./libs/portaudio/include" }
-
-    libdirs { "./libs/" }
-    links { ":libportaudio.a", "rt", "m", "asound" }
+    externalincludedirs { "./libs/miniaudio" }
 
     filter "configurations:Debug"
     do
