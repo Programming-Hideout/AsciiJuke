@@ -22,7 +22,7 @@ typedef struct audioFrame {
 } audioFrame_t;
 */
 
-//*
+/*
 int main(void) {
     flacStream_t ff;
     FILE *in = fopen("./example1.flac", "rb");
