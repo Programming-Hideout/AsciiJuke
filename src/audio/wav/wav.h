@@ -11,12 +11,12 @@
 typedef struct wavHeader {
     // beware: the string doesn't end until there's a null char
     // so it's going to read more than than necessary
-    unsigned char chunkId[4];
+    unsigned char riff[4];
     uint32_t chunkSize;
-    unsigned char format[4];
+    unsigned char fileType[4];
 
     // format sub-chunk
-    unsigned char formatSubchunkId[4]; // should be "fmt "
+    unsigned char formatSubchunkMarker[4]; // should be "fmt "
     uint32_t formatSubchunkSize;
     uint16_t audioFormat;
     uint16_t channelCount;
@@ -26,7 +26,7 @@ typedef struct wavHeader {
     uint16_t bitsPerSample;
 
     // data sub-chunk
-    unsigned char dataSubchunkId[4]; // should be "data"
+    unsigned char dataSubchunkMarker[4]; // should be "data"
     uint32_t dataSubchunkSize;
 } wavHeader_t;
 
@@ -37,6 +37,7 @@ typedef struct wavData {
 
 wavHeader_t wav_extract_header(uint8_t *stream);
 wavHeader_t wav_extract_header_from_file(FILE *stream);
+bool is_valid_wav_header(wavHeader_t wav_header);
 bool is_valid_wav_file(FILE *stream);
 
 void wav_read_all_frames(uint8_t *buffer, wavHeader_t wav_header, FILE *stream);
