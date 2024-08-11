@@ -3,7 +3,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
-wavHeader_t wav_extract_header(FILE *stream) {
+
+wavHeader_t wav_extract_header(uint8_t *stream) {
+    wavHeader_t* wav_header;
+
+    wav_header = (wavHeader_t*) stream;
+    return *wav_header;
+}
+
+wavHeader_t wav_extract_header_from_file(FILE *stream) {
     assert(stream && "The file pointer should be valid");
 
     rewind(stream); // set file pointer to the start of the file
@@ -59,6 +67,11 @@ void wav_read_n_frames(uint8_t *buffer, wavHeader_t wav_header, uint8_t n_frames
 
     fread(buffer, wav_header.sampleBlockSize * n_frames, 1, stream);
 }
+
+/**
+ * Miniaudio implementation
+ */
+
 
 #ifdef DEBUG
 

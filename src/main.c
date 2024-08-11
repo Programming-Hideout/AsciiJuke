@@ -10,16 +10,14 @@
 
 #define ERROR(cond, msg) assert((printf("%s", (!cond) ? msg : "\0"), cond))
 
-
-int main(int argc, char** argv)
-{
+int main(int argc, char **argv) {
     ma_result result;
     ma_decoder decoder;
     ma_device_config deviceConfig;
     ma_device device;
 
     result = ma_decoder_init_file("file_example_WAV_5MG.wav", NULL, &decoder);
-    
+
     assert(result == MA_SUCCESS && "Unable to open the file");
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
