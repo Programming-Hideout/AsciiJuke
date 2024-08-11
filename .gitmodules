@@ -1,3 +1,8 @@
-[submodule "libs/portaudio"]
-	path = libs/portaudio
-	url = https://github.com/PortAudio/portaudio
+[submodule "libs/arena-allocator"]
+	path = libs/arena-allocator
+	url = https://github.com/ccgargantua/arena-allocator
+    shallow = true
+[submodule "libs/miniaudio"]
+	path = libs/miniaudio
+	url = https://github.com/mackron/miniaudio
+    shallow = true
