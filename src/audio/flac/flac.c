@@ -3,7 +3,6 @@
 #include "../../utils/errorMacro.h"
 
 #include <assert.h>
-#include <endian.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +21,7 @@ typedef struct audioFrame {
 } audioFrame_t;
 */
 
-//*
+/*
 int main(void) {
     flacStream_t ff;
     FILE *in = fopen("./example1.flac", "rb");

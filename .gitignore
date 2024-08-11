@@ -9,3 +9,4 @@ AsciiJuke.sln
 /bin
 .cache
 src/audio/flac/app
+.vs/
