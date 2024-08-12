@@ -10,3 +10,4 @@ AsciiJuke.sln
 .cache/
 src/audio/flac/app
 .vs/
+**/*.gch
