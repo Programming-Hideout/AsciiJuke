@@ -1,0 +1,8 @@
+[submodule "dependencies/arena-allocator"]
+	path = dependencies/arena-allocator
+	url = https://github.com/ccgargantua/arena-allocator
+	shallow = true
+[submodule "dependencies/miniaudio"]
+	path = dependencies/miniaudio
+	url = https://github.com/mackron/miniaudio
+	shallow = true
