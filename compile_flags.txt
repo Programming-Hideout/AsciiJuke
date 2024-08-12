@@ -1,2 +1,3 @@
+-Ilibs/arena-allocator
 -Ilibs/miniaudio
 -DDEBUG

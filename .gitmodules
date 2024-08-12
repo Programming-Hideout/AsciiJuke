@@ -1,0 +1,8 @@
+[submodule "libs/arena-allocator"]
+	path = libs/arena-allocator
+	url = https://github.com/ccgargantua/arena-allocator
+    shallow = true
+[submodule "libs/miniaudio"]
+	path = libs/miniaudio
+	url = https://github.com/mackron/miniaudio
+    shallow = true

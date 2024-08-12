@@ -1,3 +1,5 @@
+-- CONFIG
+
 workspace "AsciiJuke"
 do
     configurations { "Debug", "Release" }
@@ -15,12 +17,12 @@ do
     kind "ConsoleApp"
     language "C"
     targetdir "./bin/%{cfg.buildcfg}"
-
     cdialect "C17"
 
     files { "./src/**.h", "./src/**.c" }
 
-    externalincludedirs { "./libs/miniaudio" }
+    externalincludedirs { "./libs/arena-allocator", "./libs/miniaudio" }
+
 
     filter { "system:linux" }
     do

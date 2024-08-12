@@ -3,7 +3,6 @@
 #include "../../utils/errorMacro.h"
 
 #include <assert.h>
-#include <endian.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
