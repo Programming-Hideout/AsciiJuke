@@ -60,6 +60,13 @@ enum wav_reading_result wav_create_reader(struct wav_reader *reader,
 
     reader->file_p = file_p;
     reader->header = header;
-    
+
     return SUCCESS;
+}
+
+void wav_read_frames(struct wav_reader *reader, size_t frames_count,
+                     uint8_t *result_buffer) {
+    fread(result_buffer,
+          reader->header.bits_per_sample / 8 * reader->header.channels_count,
+          frames_count, reader->file_p);
 }
