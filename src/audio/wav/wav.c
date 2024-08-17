@@ -1,6 +1,6 @@
 #include "wav.h"
 
-bool wav_is_valid_header(wav_header_t header) {
+bool wav_is_valid_header(struct wav_header header) {
     if (header.riff_marker[0] != 'R' || header.riff_marker[1] != 'I' ||
         header.riff_marker[2] != 'F' || header.riff_marker[3] != 'F') {
         return false;
@@ -27,4 +27,39 @@ bool wav_is_valid_header(wav_header_t header) {
     }
 
     return true;
+}
+
+enum wav_reading_result wav_create_reader(struct wav_reader *reader,
+                                          FILE *file_p) {
+    if (file_p == NULL) {
+        return INVALID_FILE_POINTER;
+    }
+
+    // I know that the != 0 is redundant, but imo it makes the code more
+    // readable
+    if (fseek(file_p, 0, SEEK_END) != 0) {
+        return UNKNOWN_ERROR;
+    }
+
+    size_t file_size = ftell(file_p);
+
+    rewind(file_p);
+
+    if (file_size < sizeof(struct wav_header)) {
+        return INVALID_FILE_SIZE;
+    }
+
+    struct wav_header header;
+    if (!fread(&header, sizeof(struct wav_header), 1, file_p)) {
+        return UNKNOWN_ERROR;
+    }
+
+    if (!wav_is_valid_header(header)) {
+        return INVALID_FILE_HEADER;
+    }
+
+    reader->file_p = file_p;
+    reader->header = header;
+    
+    return SUCCESS;
 }
