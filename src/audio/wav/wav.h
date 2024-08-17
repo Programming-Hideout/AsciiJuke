@@ -3,17 +3,18 @@
  * https://gist.github.com/davidzchen/9187984
  */
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
-typedef struct {
+struct wav_header {
     char riff_marker[4]; // should be equal to "RIFF"
     uint32_t riff_file_size;
     char wave_marker[4]; // should be equal to "WAVE"
 
-    char format_marker[4]; // should be equal to "fmt "
+    char format_marker[4];         // should be equal to "fmt "
     uint32_t format_subchunk_size; // should be 16 for PCM
-    uint16_t audio_format; // should be 1 for PCM
+    uint16_t audio_format;         // should be 1 for PCM
     uint16_t channels_count;
     uint32_t sample_rate;
     uint32_t byte_rate;
@@ -22,12 +23,24 @@ typedef struct {
 
     char data_marker[4]; // should be equal to "data"
     uint32_t data_subchunk_size;
+};
 
-} wav_header_t;
+// TODO: maybe this one should be part of an unified error interface
+enum wav_reading_result {
+    SUCCESS,
+    INVALID_FILE_POINTER,
+    INVALID_FILE_SIZE,
+    INVALID_FILE_HEADER,
+    UNKNOWN_ERROR
+};
 
-typedef struct {
-   wav_header_t header; // header data
-   uint8_t* data; // audio data
-} wav_data_t;
+struct wav_reader {
+    struct wav_header header;
+    FILE *file_p;
+};
 
-bool wav_is_valid_header(wav_header_t header);
+
+bool wav_is_valid_header(struct wav_header header);
+
+enum wav_reading_result wav_create_reader(struct wav_reader *reader,
+                                          FILE *file_p);
