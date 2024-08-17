@@ -3,6 +3,9 @@
  * https://gist.github.com/davidzchen/9187984
  */
 
+#ifndef WAV_H
+#define WAV_H
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -39,8 +42,12 @@ struct wav_reader {
     FILE *file_p;
 };
 
-
 bool wav_is_valid_header(struct wav_header header);
 
 enum wav_reading_result wav_create_reader(struct wav_reader *reader,
                                           FILE *file_p);
+
+void wav_read_frames(struct wav_reader *reader, size_t frames_count,
+                     uint8_t *result_buffer);
+
+#endif
