@@ -1,4 +1,0 @@
-[submodule "dependencies/arena-allocator"]
-	path = dependencies/arena-allocator
-	url = https://github.com/ccgargantua/arena-allocator
-	shallow = true
