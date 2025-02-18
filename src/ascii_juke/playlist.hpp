@@ -20,8 +20,8 @@
 namespace AsciiJuke {
 struct PlaylistEntry {
     size_t id;
-    std::string *name;
-    std::string *file_path;
+    std::string name;
+    std::string file_path;
     PlaylistEntry *next;
 };
 
@@ -41,7 +41,7 @@ class Playlist {
     Playlist();
     ~Playlist();
 
-    PlaylistOperationResult add_entry(PlaylistEntry entry);
+    PlaylistOperationResult add_entry(size_t id, std::string name, std::string file_path);
     PlaylistOperationResult remove_entry(size_t id);
 };
 } // namespace AsciiJuke
